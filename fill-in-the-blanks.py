@@ -96,17 +96,18 @@ def prompt(difficulty, lifecount, i):
                         print "Well DONE! You win"
                         exit()
                 else: break
-            lifecount -= 1
-            wrongAnswer(lifecount)
+            lifecount = wrongAnswer(lifecount)
 
 #  informs the user that he/she input wrong answer, if he/she is out of lives terminates the game
 def wrongAnswer(lifecount):
+    lifecount -= 1
     if lifecount > 0:
         print "Wrong answer please try again"
         print "You have", lifecount, "lives left"
     else:
         print "Game OVER!! Try again"
         exit()   # terminates the game
+    return lifecount
 
 # wraps the text so that it fits nicely in the screen
 def wrapText(str):
