@@ -45,91 +45,121 @@ solutions = [["function", "arguments", "None", "list"],
 # If you need help, you can sign up for a 1 on 1 coaching appointment: https://calendly.com/ipnd-1-1/20min/
 
 
-# Plays a full game of fill in the blanks.  A player is prompted to find the missing words in a paragraph
-# There are three levels easy, medium, hard
-
 def play_game():
+    """
+    Plays a full game of fill in the blanks.  A player is prompted to find the missing words in a paragraph
+    There are three levels easy, medium, hard
+    """
+
     lifecount = numberOfGuesses()  # number of lives
-    print "Please select a difficulty:"
-    print "Possible choices are",levels
-    difficulty = raw_input("Your choice is: ")
-    while(difficulty not in levels): # if the user types any other value than in levels ask again
-        print "Wrong choice type it again,"
-        difficulty = raw_input("Your choice is: ")
-    i = 0
+    print("Please select a difficulty:")
+    print("Possible choices are", levels)
+    difficulty = input("Your choice is: ")
+
+    while(difficulty not in levels):  # if the user types any other value than in levels ask again
+        print("Wrong choice type it again,")
+        difficulty = input("Your choice is: ")
+    index = 0  # index to match the level in level list 0:easy
     for word in levels:
         if difficulty == word:
             break
-        i += 1
+        index += 1
 
-    print "You have chosen", levels[i]
-    print "You have", lifecount, "lives"
-    print " "
-    prompt(difficulty, lifecount, i)
+    print("You have chosen", levels[index])
+    print("You have", lifecount, "lives")
+    print(" ")
+    prompt(lifecount, index)
 
-# asks the user number of guesses/lives he/she will have in the game
 def numberOfGuesses():
-    numberOfGuesses = raw_input("Please select the number of guesses: ")
+    """
+    Asks the user number of guesses/lives he/she will have in the game
+    :return: numberOfGuesses: string number of lives a user gets
+    """
+    numberOfGuesses = input("Please select the number of guesses: ")
     if int(numberOfGuesses):
         numberOfGuesses = int(numberOfGuesses)
-        guess_text = "\nYou will get " + str(numberOfGuesses) + " chances."
-        print "You will get " + str(numberOfGuesses) + " lives."
+        print("You will get " + str(numberOfGuesses) + " lives.")
         return numberOfGuesses
 
-# prompts user to enter the answer checks if it is correct and terminates the game if the user correctly guesses
-# the question or he/she runs out of lives
-def prompt(difficulty, lifecount, i):
-    count = 0   # counts the guesses
-    quiz = questions[i] # takes the string from questions list
-    print quiz
-    if difficulty == levels[i]:
-        while lifecount > 0:
-            while count < len(solutions[i]):
-                text = ("What should" + str(blank(count+1)) + "be: ")
-                answer = raw_input(text)
-                if answer == solutions[i][count]:
-                    print "Well done, You are correct!"
-                    quiz = replace(quiz, count+1, answer)
-                    wrapText(quiz)
-                    count += 1
-                    if count == len(solutions[i]):
-                        print "Well DONE! You win"
-                        exit()
-                else: break
-            lifecount = wrongAnswer(lifecount)
 
-#  informs the user that he/she input wrong answer, if he/she is out of lives terminates the game
+def prompt(lifecount, index):
+    """
+    prompts user to enter the answer checks if it is correct and terminates the game if the user correctly guesses
+    the question or he/she runs out of lives
+
+    :param lifecount: int number of guesses
+    :param index: int difficulty level from the list of levels
+    """
+    count = 0   # counts the guesses
+    quiz = questions[index] # takes the string from questions list
+    print(quiz)
+    while lifecount > 0:
+        while count < len(solutions[index]):
+            text = ("What should" + str(blank(count+1)) + "be: ")
+            answer = input(text)
+            if answer == solutions[index][count]:
+                print("Well done, You are correct!")
+                quiz = replace(quiz, count+1, answer)
+                wrapText(quiz)
+                count += 1
+                if count == len(solutions[index]):
+                    print("Well DONE! You win")
+                    exit()
+            else: break
+        lifecount = wrongAnswer(lifecount)
+
+
 def wrongAnswer(lifecount):
+    """
+    Informs the user that he/she input wrong answer, if he/she is out of lives terminates the game
+    :param lifecount: int number of guesses
+    :return: lifecount: int updated lifecount
+    """
     lifecount -= 1
     if lifecount > 0:
-        print "Wrong answer please try again"
-        print "You have", lifecount, "lives left"
+        print("Wrong answer please try again")
+        print("You have", lifecount, "lives left")
     else:
-        print "Game OVER!! Try again"
+        print("Game OVER!! Try again")
         exit()   # terminates the game
     return lifecount
 
-# wraps the text so that it fits nicely in the screen
-def wrapText(str):
-    quiz = textwrap.wrap(str, width=100)  # 100 characters width
+
+def wrapText(string):
+    """
+    Wraps the text so that it fits nicely in the screen
+    :param string: string string to be wrapped
+    """
+    quiz = textwrap.wrap(string, width=100)  # 100 characters width
     for element in quiz:
         print(element)
 
-# This replaces the correct answer with the blank
 
-def replace(str2, i, str1):
-    dictionary = str2.split()
+def replace(initial_string, index, replaced_string):
+    """
+    Replaces the correct answer with the blank
+    :param initial_string: string initial string
+    :param index: int number of the blank to be filled
+    :param replaced_string: string replaced blank with correct answer
+    :return: replaced: string
+    """
+    dictionary = initial_string.split() #split the initial string to its sub strings
     replaced = []
     for word in dictionary:
-        if blank(i) in word:
-            replaced.append(str1)
+        if blank(index) in word:
+            replaced.append(replaced_string)
         else: replaced.append(word)
     replaced = " ".join(replaced)
     return replaced
 
-# Creates the blanks with the required numbers, used to check the blanks
-def blank(i):
-    blank = "___" + str(i) + "___"  # ex. ___2___
+
+def blank(index):
+    """
+    Creates the place holder string that is used as the blanks
+    :param index: int the number of the blank
+    :return: a place holder string ex; ___2___
+    """
+    blank = "___" + str(index) + "___"  # ex. ___2___
     return str(blank)
 
 play_game()
